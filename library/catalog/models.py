@@ -90,4 +90,55 @@ class BookInstance(models.Model):
     def __str__(self):
         """String for representing the Model object."""
         return f'{self.id} ({self.book.title})'
+
+
+class Client(models.Model):
+    name_client = models.CharField('ISBN', max_length=13, unique=True)
+    city_id = models.IntegerField(default=0)
+    email = models.CharField(max_length=40, unique=True)
+
+    class Meta:
+        ordering = ['name_client']
+
+    def __str__(self):
+        """String for representing the Model object."""
+        return self.name_client
+
+    def get_absolute_url(self):
+        """Returns the URL to access a detail record for this book."""
+        return reverse('client-detail', args=[str(self.id)])
+
+
+class Buy(models.Model):
+    buy_description= models.TextField(max_length=1000, help_text='Enter a brief description of the book')
+    client_id = models.ForeignKey('Client', on_delete=models.SET_NULL, null=True)
+
+    class Meta:
+        ordering = ['client_id']
+
+    def __str__(self):
+        """String for representing the Model object."""
+        return self.buy_description
+
+    def get_absolute_url(self):
+        """Returns the URL to access a detail record for this book."""
+        return reverse('buy-detail', args=[str(self.id)])
+
+
+class Buy_book(models.Model):
+    buy = models.ForeignKey('Buy', on_delete=models.SET_NULL, null=True)
+    book = models.ForeignKey('Book', on_delete=models.SET_NULL, null=True)
+    amount = models.FloatField(default=0)
+
+    class Meta:
+        ordering = ['buy']
+
+    def __str__(self):
+        """String for representing the Model object."""
+        return self.book
+
+    def get_absolute_url(self):
+        """Returns the URL to access a detail record for this book."""
+        return reverse('buy_book-detail', args=[str(self.id)])
+
 # Create your models here.
